@@ -1,0 +1,60 @@
+
+;------------------------------------------------
+;
+;  Nombre:      Sergio Paque Martin
+;  Titulaci¢n:  Ingenieria Informatica
+;  Grupo:       2§ B
+;
+;------------------------------------------------
+
+
+
+                --===  MEJORAS.TXT  ===--
+
+
+ - Rutina propia de teclado (Keyboard PROC FAR)
+Se instala al inicio del programa, cada vez que es ejecutada
+llama a la funcion cuya posicion en la tabla de punteros es
+el codigo de rastreo.
+Ej: Tecla izquierda -> codigo de rastreo=75 -> call tabla[75*2]
+Controla el movimiento de la raqueta con las teclas izquierda y
+derecha, moviendola directamente.
+Modifica la velocidad de todas las pelotas con las teclas arriba y
+abajo.
+Activa/Desactiva los sonidos con la tecla TAB, mediante la modificacion
+de un bit del flag del juego. Cuando estan activados los
+sonidos se ve un caracter de nota musical en la esquina superior
+izquierda.
+Puede alargar o acortar la longitud de la raqueta, siempre dentro de
+unos limites, con las tecla > y <.
+Cambia las velocidad de una pelota determinada con las teclas a-b,
+c-d, ... , i-j, segun el numero de pelotas que haya.
+Modifica la velocidad de la raqueta con las teclas + y -.
+Se puede efectuar un disparo con la tecla ESPACIO, siempre que no haya
+otro en la pantalla. Esto se hace inicializando el tiro en pantalla e
+indicandolo en un flag.
+
+ - En el modo 3 de juego se dibuja un conjunto de ladrillos, los cuales
+pueden destruirse al chocar la bola o un disparo con ellos, segun
+la altura del ladrillo dara una puntuacion u otra (+altura +puntos).
+Cuando hay un choque con un ladrillo se produce un sonido de 2088Hz
+durante 10 ms.
+
+ - Los ladrillos pueden descubrir objetos extras, que pueden dar puntos,
+vidas o cambiar el sentido de movimiento de la raqueta, para ello
+se modifica un flag y se inicializa el objeto ciertas veces cuando
+se produce una colision con un ladrillo.
+
+ - Musica de fondo durante el juego:
+Al principio del programa se instalara una RTI para el DSP de la
+Sound Blaster que generara la "musica".
+El puerto paralelo y la Sound Blaster comparten la misma linea de
+interrupcion (IRQ7) por lo que al principio de la RTI para la
+IRQ7 habra que detectar que dispositivo ha generado la interrupcion
+y segun el resultado llamar a la correspondiente RTI.
+Para generar la musica tenemos que cargar los datos de un fichero
+(sample.sam) que contiene una muestra de sonido y guardarlos en memoria
+para luego configurar el controlador de DMA.
+
+
+
