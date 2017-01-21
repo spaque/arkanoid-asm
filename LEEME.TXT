@@ -1,0 +1,96 @@
+
+;------------------------------------------------
+;
+;  Nombre:      Sergio Paque Martin
+;  Titulaci¢n:  Ingenieria Informatica
+;  Grupo:       2§ B
+;
+;------------------------------------------------
+
+
+                --===  LEEME.TXT  ===--
+
+
+        La practica se ha dividido en 7 modulos:
+
+  - Modulo principal  ----------> FRONTON.ASM
+  - Modulo de pantalla  --------> FR_SCR.ASM
+  - Modulo de temporizador  ----> FR_TIMER.ASM
+  - Modulo de teclado  ---------> FR_KEYB.ASM
+  - Modulo de raton  -----------> FR_MOUSE.ASM
+  - Modulo de puerto paralelo  -> FR_LPT1.ASM
+  - Modulo de musica  ----------> FR_MUSIC.ASM
+
+
+ * FRONTON.ASM
+Es el encargado de inicializar las variables e instalar las RTI,
+recoge los parametros de la linea de comandos o en su defecto
+los pide al principio del programa. Una vez iniciado el juego
+es el responsable de controlar el movimiento de las bolas y el
+cambio de modo de juego, esto se consigue mediante la modificacion
+de los bits de un flag, en el cual se recoge el estado del juego.
+El modulo de temporizador es el que decide cuando se mueven o
+actualizan las bolas, pero el modulo principal decide donde se
+mueve o dibuja cada bola. Al final del programa tiene que dejar
+el entorno tal y como se lo encontro, restaurando la pantalla
+inicial y las RTI originales.
+
+ * FR_SCR.ASM
+Debemos acudir a funciones de este modulo cuando queramos dibujar
+algo en pantalla. Todo ello lo hace escribiendo directamente en
+memoria de video para mejorar la fluidez del juego.
+El juego se ejecuta en modo 80x25, los modos de juego 1 y 2 funcionan
+en la pagina 0 de memoria de video y el modo 3 en la pagina 2.
+
+ * FR_TIMER.ASM
+Sincroniza el movimiento de las bolas y las mueve cuando llega el
+momento. El temporizador es reprogramado con 1 ms de presicion.
+Todo objeto del juego que se mueva tiene un contador a traves
+del cual se controla la temporizacion de sus movimientos.
+Cuando un objeto esta en movimiento (hecho que se informa a
+traves de un flag o un bit de un flag) se decrementa su contador y
+cuando llegue a cero se ejecuta la rutina que mueve a dicho objeto.
+En el caso del movimiento de las bolas en el modo 2, en el que tienen
+que rebotar entre ellas si tienen la misma velocidad, en primer lugar
+se actualiza la posicion de cada bola (si es su turno), y despues se
+actualizan en pantalla las bolas que se han movido.
+En el caso de los sonidos del altavoz del sistema, cuando se produce
+un rebote se activa el altavoz a una frecuencia determinada y su contador
+se actualiza con la duracion en ms, cuando el contador llegue a cero
+la RTI del temporizador se encargara de apagar el altavoz.
+
+ * FR_KEYB.ASM
+Lleva a cabo las funciones especificadas para cada tecla y se encarga
+de mover la raqueta cuando se pulsa la tecla correspondiente.
+Todo esto se ha implementado mediante una tabla de punteros a funciones.
+En principio la inicializamos con puntero a un procedimiento que no hace
+nada, despues de esto solo tenemos que instalar la funcion asociada a
+cada tecla en la posicion correspondiente al codigo de rastreo de dicha
+tecla. Luego en la RTI del teclado tendra que llamar a la funcion
+que se encuentre en la posicion que obtenemos del codigo de rastreo.
+
+ * FR_MOUSE.ASM
+Tan solo tiene la funcion de esperar a un doble click del raton, para
+devolver la posicion del click e iniciar el juego en modo 3. Si
+no se encuentra un driver del raton o no hay raton se devuelve una
+posicion por defecto.
+
+ * FR_LPT1.ASM
+Contiene la RTI del puerto paralelo, la cual tiene la funcion de
+finalizar el programa cuando se presiona el pulsador conectado
+al puerto LPT1.
+
+ * FR_MUSIC.ASM
+Se encarga de reproducir una musica de fondo mientras se juega
+(si no se detecta tarjeta de sonido no habra musica).
+Esto se consigue programando el controlador de DMA y el DSP (Digital
+Sound Proccessor) de la Sound Blaster.
+El controlador de DMA es programado para transferir un bloque
+de memoria al dispositivo que lo solicite (en este caso el DSP), una
+vez que se ha finalizado la transferencia el DSP produce una
+interrupcion hardware en la que tenemos que reprogramar la DMA para
+hacer otra transferencia.
+Nota: la musica sólo se escucha en win98 con una tarjeta de sonido
+      Sound Blaster o compatible
+
+
